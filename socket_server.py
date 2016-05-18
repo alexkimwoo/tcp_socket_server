@@ -24,18 +24,14 @@ def count():
 def server_business(name, delay):
 
     while True:
+        b = socket_server.Business()
+        resp_ping = 'pong'
+        resp_time = now()
+        resp_r = str(count())
 
-        rules = {'ping': 'pong', 'time': now(), 'r': count()}
-        b = socket_server.Business(rules)
-
-        resp_ping = b.process_data('ping')
-        resp_time = b.process_data('time')
-        resp_r = b.process_data('r')
-
-        rules_result = (['ping', resp_ping],['time', resp_time],['r', str(resp_r)])
+        rules_result = (['ping', resp_ping],['time', resp_time],['r', resp_r])
         b.refresh_data(rules_result)
         time.sleep(delay)
-
 #=======================================================================================================================
 try:
     thread.start_new_thread(server_business, ("SERVER_BUSINESS", 0.5, ) )
@@ -46,7 +42,6 @@ socket_server.myServer(port=9000)
 #=======================================================================================================================
 while True:
    pass
-
 """
 #=======================================================================================================================
 try:
@@ -83,8 +78,6 @@ class ThreadedTCPRequestHandler(SocketServer.BaseRequestHandler):
                 resp = 'null'
                 resp_to_client = server_responses
 
-                #print resp_to_client
-
                 for n in resp_to_client:
                     if data == n[0]:
                         resp = n[1]
@@ -114,12 +107,9 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     pass
 #=======================================================================================================================
 class Business:
-    server_business = {}
-    def __init__(self, business):   #contrutor
-        self.server_business = business
 
-    def process_data(self,k):
-        return self.server_business.get(k)
+    def __init__(self):
+        pass
 
     def refresh_data(self,responses):
         global server_responses
